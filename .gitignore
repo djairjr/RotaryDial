@@ -1,0 +1,24 @@
+# Build and IDE artifacts
+build/
+.pio/
+.vscode/
+*.o
+*.d
+*.elf
+*.map
+
+# Local backups and agent scratch
+*.bak
+*.bak_*
+_backup_*/
+.hermes/
+.code-review-graph/
+
+# Translation intermediates (the registry lives outside the repo)
+*_en.md
+*_en-*.md
+*_pt-BR.md
+
+# OS noise
+.DS_Store
+Thumbs.db

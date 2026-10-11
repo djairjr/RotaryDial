@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring Map for RotaryDial
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+RotaryDial	KEYWORD1
+RotaryDialMode	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+beginMechanical	KEYWORD2
+beginOptical	KEYWORD2
+available	KEYWORD2
+read	KEYWORD2
+readPulses	KEYWORD2
+reset	KEYWORD2
+getHighLenCount	KEYWORD2
+getHighLen	KEYWORD2
+clearHighLens	KEYWORD2
+setDebounce	KEYWORD2
+setMaxGap	KEYWORD2
+setDigitEnd	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+ROTARYDIAL_MECHANICAL	LITERAL1
+ROTARYDIAL_OPTICAL	LITERAL1
+ROTARYDIAL_DEFAULT_PIN	LITERAL1
+ISR_ATTR	LITERAL1
