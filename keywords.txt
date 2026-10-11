@@ -1,13 +1,13 @@
 #######################################
-# Syntax Coloring Map for RotaryDial
+# Syntax Coloring Map for RotaryDialUnified
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-RotaryDial	KEYWORD1
-RotaryDialMode	KEYWORD1
+RotaryDialUnified	KEYWORD1
+RotaryDialUnifiedMode	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -31,7 +31,7 @@ setDigitEnd	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
-ROTARYDIAL_MECHANICAL	LITERAL1
-ROTARYDIAL_OPTICAL	LITERAL1
-ROTARYDIAL_DEFAULT_PIN	LITERAL1
+ROTARYDIAL_UNIFIED_MECHANICAL	LITERAL1
+ROTARYDIAL_UNIFIED_OPTICAL	LITERAL1
+ROTARYDIAL_UNIFIED_DEFAULT_PIN	LITERAL1
 ISR_ATTR	LITERAL1

@@ -1,4 +1,4 @@
-# RotaryDial
+# RotaryDialUnified
 
 Unified Arduino library for reading telephone rotary dials.
 
@@ -6,13 +6,13 @@ Supports **two modes** of operation in a single library:
 
 | Mode | Sensor | How to start |
 |------|--------|-------------|
-| `ROTARYDIAL_MECHANICAL` **(default)** | Traditional metallic contacts | `begin(D0)` or `beginMechanical(D0)` |
-| `ROTARYDIAL_OPTICAL` | Optical encoder (10-slit disc + rest area) | `beginOptical(D0)` |
+| `ROTARYDIAL_UNIFIED_MECHANICAL` **(default)** | Traditional metallic contacts | `begin(D0)` or `beginMechanical(D0)` |
+| `ROTARYDIAL_UNIFIED_OPTICAL` | Optical encoder (10-slit disc + rest area) | `beginOptical(D0)` |
 
 **Platforms:** AVR, RP2040, ESP32  
 **Default pin:** D0 (RP2040/ESP32) — on AVR use pin 2 or 3  
 **Default mode:** MECHANICAL  
-**Single include:** `#include <RotaryDial.h>`
+**Single include:** `#include <RotaryDialUnified.h>`
 
 ---
 
@@ -30,17 +30,17 @@ Supports **two modes** of operation in a single library:
 
 ## Installation
 
-Copy the `RotaryDial` folder into `Documents/Arduino/libraries/`.
+Copy the `RotaryDialUnified` folder into `Documents/Arduino/libraries/`.
 
 ```
 Documents/Arduino/libraries/
-└── RotaryDial/
+└── RotaryDialUnified/
     ├── library.properties
     ├── README.md
     ├── LICENSE.md
     ├── src/
-    │   ├── RotaryDial.h
-    │   └── RotaryDial.cpp
+    │   ├── RotaryDialUnified.h
+    │   └── RotaryDialUnified.cpp
     ├── examples/
     │   ├── dial_read_mechanical/
     │   ├── dial_read_optical/
@@ -54,28 +54,28 @@ Documents/Arduino/libraries/
 ## API
 
 ```cpp
-#include <RotaryDial.h>
+#include <RotaryDialUnified.h>
 
 // ── Initialization ─────────────────────────
 
-RotaryDial::begin(D0);                           // Default = MECHANICAL
-RotaryDial::begin(D0, ROTARYDIAL_MECHANICAL);    // Explicit
-RotaryDial::begin(D0, ROTARYDIAL_OPTICAL);       // Optical
-RotaryDial::beginMechanical(D0);                 // Shortcut
-RotaryDial::beginOptical(D0);                    // Shortcut
+RotaryDialUnified::begin(D0);                           // Default = MECHANICAL
+RotaryDialUnified::begin(D0, ROTARYDIAL_UNIFIED_MECHANICAL);    // Explicit
+RotaryDialUnified::begin(D0, ROTARYDIAL_UNIFIED_OPTICAL);       // Optical
+RotaryDialUnified::beginMechanical(D0);                 // Shortcut
+RotaryDialUnified::beginOptical(D0);                    // Shortcut
 
 // ── Reading ────────────────────────────────
 
-bool ready = RotaryDial::available();   // Digit ready?
-int digit  = RotaryDial::read();        // 0-9, or -1
-int pulses = RotaryDial::readPulses();  // 1-10, or -1
-RotaryDial::reset();                   // Clears the state
+bool ready = RotaryDialUnified::available();   // Digit ready?
+int digit  = RotaryDialUnified::read();        // 0-9, or -1
+int pulses = RotaryDialUnified::readPulses();  // 1-10, or -1
+RotaryDialUnified::reset();                   // Clears the state
 
 // ── Fine tuning (optional) ─────────────────
 
-RotaryDial::setDebounce(15);   // Minimum HIGH (ms)
-RotaryDial::setMaxGap(200);    // Maximum HIGH (ms) — optical
-RotaryDial::setDigitEnd(800);  // End-of-digit timeout (ms)
+RotaryDialUnified::setDebounce(15);   // Minimum HIGH (ms)
+RotaryDialUnified::setMaxGap(200);    // Maximum HIGH (ms) — optical
+RotaryDialUnified::setDigitEnd(800);  // End-of-digit timeout (ms)
 ```
 
 ---
@@ -83,18 +83,18 @@ RotaryDial::setDigitEnd(800);  // End-of-digit timeout (ms)
 ## Quick example (mechanical — default)
 
 ```cpp
-#include <RotaryDial.h>
+#include <RotaryDialUnified.h>
 
 void setup() {
     Serial.begin(115200);
-    RotaryDial::begin(D0);   // mechanical mode (default)
-    // On AVR (Nano/Uno): use RotaryDial::begin(2);
+    RotaryDialUnified::begin(D0);   // mechanical mode (default)
+    // On AVR (Nano/Uno): use RotaryDialUnified::begin(2);
     Serial.println("Dial...");
 }
 
 void loop() {
-    if (RotaryDial::available()) {
-        Serial.println(RotaryDial::read());
+    if (RotaryDialUnified::available()) {
+        Serial.println(RotaryDialUnified::read());
     }
 }
 ```
@@ -103,7 +103,7 @@ void loop() {
 
 ## Modes and timing
 
-### Mechanical (`ROTARYDIAL_MECHANICAL`) — DEFAULT
+### Mechanical (`ROTARYDIAL_UNIFIED_MECHANICAL`) — DEFAULT
 
 ```
 Signal:  HIGH ┐    ┌─┐    ┌─┐    ┌─┐         ┌───────────┐
@@ -117,7 +117,7 @@ Signal:  HIGH ┐    ┌─┐    ┌─┐    ┌─┐         ┌────
 - **MS_DIGITEND = 600ms** — closes the digit after silence
 - No ceiling (MS_MAXGAP = 0)
 
-### Optical (`ROTARYDIAL_OPTICAL`)
+### Optical (`ROTARYDIAL_UNIFIED_OPTICAL`)
 
 Disc with 10 uniform slits + ~1/4 rest area. The sensor stays blocked (HIGH) during rest.
 
@@ -131,7 +131,7 @@ Disc with 10 uniform slits + ~1/4 rest area. The sensor stays blocked (HIGH) dur
 
 Use the `DialCalibrator` example to find the ideal values for your dial:
 
-1. Open `File > Examples > RotaryDial > DialCalibrator`
+1. Open `File > Examples > RotaryDialUnified > DialCalibrator`
 2. Dial 1, 2, 3 ... 9, 0 as requested
 3. Copy the suggested values into `setDebounce()`, `setMaxGap()`, `setDigitEnd()`
 

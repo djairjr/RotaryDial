@@ -322,16 +322,16 @@ void setup() {
         Serial.println(F("\n=========================================="));
         Serial.println(F("  SUGGESTED VALUES — Copy to your sketch"));
         Serial.println(F("=========================================="));
-        Serial.print(F("  RotaryDial::setDebounce("));
+        Serial.print(F("  RotaryDialUnified::setDebounce("));
         Serial.print(debounce);
         Serial.println(F(");   // floor: filters noise and return pulses"));
 
-        Serial.print(F("  RotaryDial::setMaxGap("));
+        Serial.print(F("  RotaryDialUnified::setMaxGap("));
         Serial.print(maxgap);
         Serial.println(F(");       // ceiling: 0 = no ceiling (recommended)"));
         Serial.println(F("                                 // gap and slit can be in the same range"));
 
-        Serial.print(F("  RotaryDial::setDigitEnd("));
+        Serial.print(F("  RotaryDialUnified::setDigitEnd("));
         Serial.print(digitend);
         Serial.println(F(");  // timeout: closes the digit after silence"));
     } else {

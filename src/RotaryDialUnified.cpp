@@ -1,5 +1,5 @@
 /**
- * RotaryDial.cpp — unified implementation (mechanical + optical).
+ * RotaryDialUnified.cpp — unified implementation (mechanical + optical).
  *
  * DEFAULT: MECHANICAL (MS_DEBOUNCE=15ms, no ceiling, MS_DIGITEND=600ms).
  *
@@ -27,7 +27,7 @@
  */
 
 #include "Arduino.h"
-#include "RotaryDial.h"
+#include "RotaryDialUnified.h"
 
 // ── Default values per mode ─────────────────────────────
 
@@ -40,17 +40,17 @@
 
 // ── Static members (default = mechanical) ───────────────
 
-RotaryDialMode RotaryDial::_mode = ROTARYDIAL_MECHANICAL;
-int RotaryDial::_interruptPin = ROTARYDIAL_DEFAULT_PIN;
+RotaryDialUnifiedMode RotaryDialUnified::_mode = ROTARYDIAL_UNIFIED_MECHANICAL;
+int RotaryDialUnified::_interruptPin = ROTARYDIAL_UNIFIED_DEFAULT_PIN;
 
-volatile int RotaryDial::_pulseCount = 0;
-volatile unsigned long RotaryDial::_lastHigh = 0;
-volatile int RotaryDial::_lastState = HIGH;
+volatile int RotaryDialUnified::_pulseCount = 0;
+volatile unsigned long RotaryDialUnified::_lastHigh = 0;
+volatile int RotaryDialUnified::_lastState = HIGH;
 
-unsigned long RotaryDial::_debounceMs = MS_DEBOUNCE_MECH;
-unsigned long RotaryDial::_maxGapMs   = 0;                 // mechanical: no ceiling
-unsigned long RotaryDial::_digitEndMs = MS_DIGITEND_MECH;
-volatile bool RotaryDial::_firstPulse = false;
+unsigned long RotaryDialUnified::_debounceMs = MS_DEBOUNCE_MECH;
+unsigned long RotaryDialUnified::_maxGapMs   = 0;                 // mechanical: no ceiling
+unsigned long RotaryDialUnified::_digitEndMs = MS_DIGITEND_MECH;
+volatile bool RotaryDialUnified::_firstPulse = false;
 
 // highLen buffer for debug/calibration
 #define HL_BUF_SIZE 20
@@ -59,12 +59,12 @@ static volatile int _hlCount = 0;
 
 // ── Initialization ──────────────────────────────────────
 
-void RotaryDial::begin(int pulsePin, RotaryDialMode mode) {
+void RotaryDialUnified::begin(int pulsePin, RotaryDialUnifiedMode mode) {
     _interruptPin = pulsePin;
     _mode = mode;
     reset();
 
-    if (mode == ROTARYDIAL_MECHANICAL) {
+    if (mode == ROTARYDIAL_UNIFIED_MECHANICAL) {
         _debounceMs = MS_DEBOUNCE_MECH;
         _maxGapMs   = 0;               // no ceiling in mechanical mode
         _digitEndMs = MS_DIGITEND_MECH;
@@ -78,22 +78,22 @@ void RotaryDial::begin(int pulsePin, RotaryDialMode mode) {
     pinMode(_interruptPin, INPUT_PULLUP);
     attachInterrupt(
         digitalPinToInterrupt(_interruptPin),
-        RotaryDial::isr,
+        RotaryDialUnified::isr,
         CHANGE
     );
 }
 
-void RotaryDial::beginMechanical(int pulsePin) {
-    begin(pulsePin, ROTARYDIAL_MECHANICAL);
+void RotaryDialUnified::beginMechanical(int pulsePin) {
+    begin(pulsePin, ROTARYDIAL_UNIFIED_MECHANICAL);
 }
 
-void RotaryDial::beginOptical(int pulsePin) {
-    begin(pulsePin, ROTARYDIAL_OPTICAL);
+void RotaryDialUnified::beginOptical(int pulsePin) {
+    begin(pulsePin, ROTARYDIAL_UNIFIED_OPTICAL);
 }
 
 // ── ISR (IRAM_ATTR on ESP32, no effect on AVR/RP2040) ──
 
-void ISR_ATTR RotaryDial::isr() {
+void ISR_ATTR RotaryDialUnified::isr() {
     int state = digitalRead(_interruptPin);
 
     // Debounce: ignore if the state did not change
@@ -117,7 +117,7 @@ void ISR_ATTR RotaryDial::isr() {
 
             // Optical mode: the first HIGH after read()+reset() is the disc's
             // return pulse (lastHigh=0 produces a spurious measurement). Skip it.
-            if (_mode == ROTARYDIAL_OPTICAL && _firstPulse) {
+            if (_mode == ROTARYDIAL_UNIFIED_OPTICAL && _firstPulse) {
                 _firstPulse = false;
             } else {
                 _pulseCount++;
@@ -128,34 +128,34 @@ void ISR_ATTR RotaryDial::isr() {
 
 // ── Debug / calibration ────────────────────────────────
 
-int RotaryDial::getHighLenCount() {
+int RotaryDialUnified::getHighLenCount() {
     return _hlCount;
 }
 
-unsigned long RotaryDial::getHighLen(int i) {
+unsigned long RotaryDialUnified::getHighLen(int i) {
     if (i >= 0 && i < _hlCount) return _hlBuf[i];
     return 0;
 }
 
-void RotaryDial::clearHighLens() {
+void RotaryDialUnified::clearHighLens() {
     _hlCount = 0;
 }
 
 // ── Reading ─────────────────────────────────────────────
 
-bool RotaryDial::available() {
+bool RotaryDialUnified::available() {
     // The digit is ready when there are pulses and the silence timeout has passed
     return (_pulseCount > 0 &&
             (millis() - _lastHigh) > _digitEndMs);
 }
 
-int RotaryDial::decodeDigit(int pulses) {
+int RotaryDialUnified::decodeDigit(int pulses) {
     if (pulses == 10) return 0;
     if (pulses >= 1 && pulses <= 9) return pulses;
     return -1;
 }
 
-int RotaryDial::read() {
+int RotaryDialUnified::read() {
     if (!available()) return -1;
     int pulses = _pulseCount;
     int digit = decodeDigit(pulses);
@@ -163,30 +163,30 @@ int RotaryDial::read() {
     return digit;
 }
 
-int RotaryDial::readPulses() {
+int RotaryDialUnified::readPulses() {
     if (!available()) return -1;
     int pulses = _pulseCount;
     reset();
     return pulses;
 }
 
-void RotaryDial::reset() {
+void RotaryDialUnified::reset() {
     _pulseCount = 0;
     _lastHigh = 0;
     _lastState = HIGH;
-    _firstPulse = (_mode == ROTARYDIAL_OPTICAL);
+    _firstPulse = (_mode == ROTARYDIAL_UNIFIED_OPTICAL);
 }
 
 // ── Runtime timing adjustments ─────────────────────────
 
-void RotaryDial::setDebounce(unsigned long ms) {
+void RotaryDialUnified::setDebounce(unsigned long ms) {
     _debounceMs = ms;
 }
 
-void RotaryDial::setMaxGap(unsigned long ms) {
+void RotaryDialUnified::setMaxGap(unsigned long ms) {
     _maxGapMs = ms;
 }
 
-void RotaryDial::setDigitEnd(unsigned long ms) {
+void RotaryDialUnified::setDigitEnd(unsigned long ms) {
     _digitEndMs = ms;
 }

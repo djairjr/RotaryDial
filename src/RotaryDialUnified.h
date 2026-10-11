@@ -1,18 +1,18 @@
 #pragma once
 
 /**
- * RotaryDial.h — unified library for telephone rotary dials.
+ * RotaryDialUnified.h — unified library for telephone rotary dials.
  *
  * Two operating modes in a single library:
- *   ROTARYDIAL_MECHANICAL — metallic contacts (pulse = closure) [DEFAULT]
- *   ROTARYDIAL_OPTICAL    — optical encoder (disc with 10 slots + resting area)
+ *   ROTARYDIAL_UNIFIED_MECHANICAL — metallic contacts (pulse = closure) [DEFAULT]
+ *   ROTARYDIAL_UNIFIED_OPTICAL    — optical encoder (disc with 10 slots + resting area)
  *
  * Platforms: AVR, RP2040, ESP32.
  *   - ESP32:  the ISR is marked with IRAM_ATTR automatically.
  *   - AVR:    only pins 2 or 3 can take an external interrupt.
  *   - RP2040: any GPIO can take an interrupt.
  *
- * Default pin (ROTARYDIAL_DEFAULT_PIN):
+ * Default pin (ROTARYDIAL_UNIFIED_DEFAULT_PIN):
  *   ESP32  → GPIO 0
  *   RP2040 → D0 (GPIO 0)
  *   AVR    → 2 (INT0)
@@ -40,17 +40,17 @@
 // ESP32 does not define D0; it uses the raw GPIO number.
 // RP2040 (Arduino-Pico) defines D0 = GPIO0.
 // AVR: pins 0-13 are raw numbers; only 2 and 3 have INTx.
-#ifndef ROTARYDIAL_DEFAULT_PIN
+#ifndef ROTARYDIAL_UNIFIED_DEFAULT_PIN
   #if defined(ESP32) || defined(CONFIG_IDF_TARGET_ESP32) || \
       defined(CONFIG_IDF_TARGET_ESP32S2) || defined(CONFIG_IDF_TARGET_ESP32S3) || \
       defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C6)
-    #define ROTARYDIAL_DEFAULT_PIN  0    // ESP32: GPIO0
+    #define ROTARYDIAL_UNIFIED_DEFAULT_PIN  0    // ESP32: GPIO0
   #elif defined(ARDUINO_ARCH_RP2040)
-    #define ROTARYDIAL_DEFAULT_PIN  D0   // RP2040: D0 = GPIO0
+    #define ROTARYDIAL_UNIFIED_DEFAULT_PIN  D0   // RP2040: D0 = GPIO0
   #elif defined(ARDUINO_ARCH_AVR)
-    #define ROTARYDIAL_DEFAULT_PIN  2    // AVR: INT0 (the only safe pin)
+    #define ROTARYDIAL_UNIFIED_DEFAULT_PIN  2    // AVR: INT0 (the only safe pin)
   #else
-    #define ROTARYDIAL_DEFAULT_PIN  0    // fallback
+    #define ROTARYDIAL_UNIFIED_DEFAULT_PIN  0    // fallback
   #endif
 #endif
 
@@ -67,18 +67,18 @@
   #endif
 #endif
 
-enum RotaryDialMode : int {
-    ROTARYDIAL_MECHANICAL,   // traditional electrical contact
-    ROTARYDIAL_OPTICAL        // optical encoder (slot + resting area)
+enum RotaryDialUnifiedMode : int {
+    ROTARYDIAL_UNIFIED_MECHANICAL,   // traditional electrical contact
+    ROTARYDIAL_UNIFIED_OPTICAL        // optical encoder (slot + resting area)
 };
 
-class RotaryDial {
+class RotaryDialUnified {
 public:
     // ── Initialization ─────────────────────────────────
-    static void begin(int pulsePin = ROTARYDIAL_DEFAULT_PIN,
-                      RotaryDialMode mode = ROTARYDIAL_MECHANICAL);
-    static void beginMechanical(int pulsePin = ROTARYDIAL_DEFAULT_PIN);
-    static void beginOptical(int pulsePin = ROTARYDIAL_DEFAULT_PIN);
+    static void begin(int pulsePin = ROTARYDIAL_UNIFIED_DEFAULT_PIN,
+                      RotaryDialUnifiedMode mode = ROTARYDIAL_UNIFIED_MECHANICAL);
+    static void beginMechanical(int pulsePin = ROTARYDIAL_UNIFIED_DEFAULT_PIN);
+    static void beginOptical(int pulsePin = ROTARYDIAL_UNIFIED_DEFAULT_PIN);
 
     // ── Reading ────────────────────────────────────────
     static bool available();
@@ -98,7 +98,7 @@ public:
 
 private:
     // State
-    static RotaryDialMode     _mode;
+    static RotaryDialUnifiedMode     _mode;
     static int                _interruptPin;
     static volatile int       _pulseCount;
     static volatile unsigned long _lastHigh;

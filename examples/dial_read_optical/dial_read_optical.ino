@@ -10,7 +10,7 @@
  *
  * ── Default pin per platform ────────────────────────────
  *   ESP32  → GPIO 0      RP2040 → D0 (GPIO 0)      AVR → 2 (INT0)
- *   To use another pin: RotaryDial::beginOptical(MY_PIN);
+ *   To use another pin: RotaryDialUnified::beginOptical(MY_PIN);
  *
  * ── DISC TIMING ─────────────────────────────────────────
  *   This disc does NOT follow the traditional telephone pattern.
@@ -43,15 +43,15 @@
  *                            800ms without a new pulse
  *
  *   These values can be adjusted at runtime:
- *     RotaryDial::setDebounce(ms);
- *     RotaryDial::setMaxGap(ms);
- *     RotaryDial::setDigitEnd(ms);
+ *     RotaryDialUnified::setDebounce(ms);
+ *     RotaryDialUnified::setMaxGap(ms);
+ *     RotaryDialUnified::setDigitEnd(ms);
  *
  * ── OUTPUT ──────────────────────────────────────────────
  *   Serial 115200 baud. Prints digits until the timeout.
  */
 
-#include <RotaryDial.h>
+#include <RotaryDialUnified.h>
 
 // ── Sketch parameters ────────────────────────────────────
 // Time without a new digit before printing a line break
@@ -60,18 +60,18 @@
 void setup() {
     Serial.begin(115200);
     delay(500);
-    Serial.println(F("Optical RotaryDial (Djair's disc) — ready."));
+    Serial.println(F("Optical RotaryDialUnified (Djair's disc) — ready."));
     Serial.println(F("  Gap ~100-176ms | Slit ~52-62ms | Debounce 50ms | DigitEnd 800ms"));
     Serial.println(F("Dial the digits..."));
-    RotaryDial::beginOptical();   // default pin for the platform
+    RotaryDialUnified::beginOptical();   // default pin for the platform
 }
 
 unsigned long lastDigitTime = 0;
 bool newline = true;
 
 void loop() {
-    if (RotaryDial::available()) {
-        int digit = RotaryDial::read();
+    if (RotaryDialUnified::available()) {
+        int digit = RotaryDialUnified::read();
         Serial.print(digit);
         lastDigitTime = millis();
         newline = false;
